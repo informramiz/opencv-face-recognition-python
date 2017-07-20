@@ -33,10 +33,9 @@ This algorithm considers the fact that not all parts of a face are equally impor
 
 EigenFaces face recognizer looks at all the training images of all the persons as a whole and try to extract the components which are important and useful (the components that catch the maximum variance/change) and discards the rest of the components. This way it not only extracts the important components from the training data but also saves memory by discarding the less important components. These important components it extracts are called **principal components**. Below is an image showing the principal components extracted from a list of faces.
 
-<br><br>
-<center>**Principal Components**</center>
+**Principal Components**
 ![eigenfaces_opencv](visualization/eigenfaces_opencv.png)
-<center>**[source](http://docs.opencv.org/2.4/modules/contrib/doc/facerec/facerec_tutorial.html)**</center>
+**[source](http://docs.opencv.org/2.4/modules/contrib/doc/facerec/facerec_tutorial.html)**
 
 You can see that principal components actually represent faces and these faces are called **eigen faces** and hence the name of the algorithm. 
 
@@ -56,10 +55,9 @@ Fisherfaces algorithm, instead of extracting useful features that represent all 
 
 Below is an image of features extracted using Fisherfaces algorithm.
 
-<br><br>
-<center>**Fisher Faces**</center>
+**Fisher Faces**
 ![eigenfaces_opencv](visualization/fisherfaces_opencv.png)
-<center>**[source](http://docs.opencv.org/2.4/modules/contrib/doc/facerec/facerec_tutorial.html)**</center>
+**[source](http://docs.opencv.org/2.4/modules/contrib/doc/facerec/facerec_tutorial.html)**
 
 You can see that features extracted actually represent faces and these faces are called **fisher faces** and hence the name of the algorithm. 
 
@@ -77,16 +75,13 @@ Idea is to not look at the image as a whole instead find the local features of a
 
 Take a 3x3 window and move it one image, at each move (each local part of an image), compare the pixel at the center with its neighbor pixels. The neighbors with intensity value less than or equal to center pixel are denoted by 1 and others by 0. Then you read these 0/1 values under 3x3 window in a clockwise order and you will have a binary pattern like 11100011 and this pattern is local to some area of the image. You do this on whole image and you will have a list of local binary patterns. 
 
-<br><br>
-<center>**LBP Labeling**</center>
+**LBP Labeling**
 ![LBP labeling](visualization/lbp-labeling.png)
 
 Now you get why this algorithm has Local Binary Patterns in its name? Because you get a list of local binary patterns. Now you may be wondering, what about the histogram part of the LBPH? Well after you get a list of local binary patterns, you convert each binary pattern into a decimal number (as shown in above image) and then you make a [histogram](https://www.mathsisfun.com/data/histograms.html) of all of those values. A sample histogram looks like this. 
 
-<br>
-<center>**Sample Histogram**</center>
+**Sample Histogram**
 ![LBP labeling](visualization/histogram.png)
-<br>
 
 
 I guess this answers the question about histogram part. So in the end you will have **one histogram for each face** image in the training data set. That means if there were 100 images in training data set then LBPH will extract 100 histograms after training and store them for later recognition. Remember, **algorithm also keeps track of which histogram belongs to which person**.
@@ -95,10 +90,9 @@ Later during recognition, when you will feed a new image to the recognizer for r
 <br><br>
 Below is a list of faces and their respective local binary patterns images. You can see that the LBP images are not affected by changes in light conditions.
 
-<br><br>
-<center>**LBP Faces**</center>
+**LBP Faces**
 ![LBP faces](visualization/lbph-faces.jpg)
-<center>**[source](http://docs.opencv.org/2.4/modules/contrib/doc/facerec/facerec_tutorial.html)**</center>
+**[source](http://docs.opencv.org/2.4/modules/contrib/doc/facerec/facerec_tutorial.html)**
 
 
 The theory part is over and now comes the coding part! Ready to dive into coding? Let's get into it then. 
