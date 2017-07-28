@@ -51,7 +51,7 @@ import numpy as np
 # In[2]:
 
 #there is no label 0 in our training data so subject name for index/label 0 is empty
-subjects = ["", "Tom Cruise", "Shahrukh Khan"]
+subjects = ["", "Ramiz Raja", "Elvis Presley"]
 
 
 # ### Prepare training data
@@ -330,8 +330,8 @@ predicted_img2 = predict(test_img2)
 print("Prediction complete")
 
 #display both images
-cv2.imshow("Tom cruise test", predicted_img1)
-cv2.imshow("Shahrukh Khan test", predicted_img2)
+cv2.imshow(subjects[1], predicted_img1)
+cv2.imshow(subjects[2], predicted_img2)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 cv2.waitKey(1)
