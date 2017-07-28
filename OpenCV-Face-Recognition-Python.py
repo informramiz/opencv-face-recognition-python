@@ -175,7 +175,7 @@ def prepare_training_data(data_folder_path):
             image = cv2.imread(image_path)
             
             #display an image window to show the image 
-            cv2.imshow("Training on image...", image)
+            cv2.imshow("Training on image...", cv2.resize(image, (400, 500)))
             cv2.waitKey(100)
             
             #detect face
@@ -330,8 +330,8 @@ predicted_img2 = predict(test_img2)
 print("Prediction complete")
 
 #display both images
-cv2.imshow(subjects[1], predicted_img1)
-cv2.imshow(subjects[2], predicted_img2)
+cv2.imshow(subjects[1], cv2.resize(predicted_img1, (400, 500)))
+cv2.imshow(subjects[2], cv2.resize(predicted_img2, (400, 500)))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 cv2.waitKey(1)
