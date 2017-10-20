@@ -303,7 +303,7 @@ def predict(test_img):
     face, rect = detect_face(img)
 
     #predict the image using our face recognizer 
-    label= face_recognizer.predict(face)
+    label, confidence = face_recognizer.predict(face)
     #get name of respective label returned by face recognizer
     label_text = subjects[label]
     
