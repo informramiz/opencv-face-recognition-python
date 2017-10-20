@@ -243,13 +243,13 @@ print("Total labels: ", len(labels))
 # In[6]:
 
 #create our LBPH face recognizer 
-face_recognizer = cv2.face.createLBPHFaceRecognizer()
+face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 
 #or use EigenFaceRecognizer by replacing above line with 
-#face_recognizer = cv2.face.createEigenFaceRecognizer()
+#face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
 #or use FisherFaceRecognizer by replacing above line with 
-#face_recognizer = cv2.face.createFisherFaceRecognizer()
+#face_recognizer = cv2.face.FisherFaceRecognizer_create()
 
 
 # Now that we have initialized our face recognizer and we also have prepared our training data, it's time to train the face recognizer. We will do that by calling the `train(faces-vector, labels-vector)` method of face recognizer. 
