@@ -51,7 +51,7 @@ import numpy as np
 # In[2]:
 
 #there is no label 0 in our training data so subject name for index/label 0 is empty
-subjects = ["", "Ramiz Raja", "Elvis Presley"]
+subjects = ["", "Bolsomito", "Seu Madruga"]
 
 
 # ### Prepare training data
@@ -103,10 +103,10 @@ def detect_face(img):
 
     #let's detect multiscale (some images may be closer to camera than others) images
     #result is a list of faces
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5);
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5)
     
     #if no faces are detected then return original img
-    if (len(faces) == 0):
+    if len(faces) == 0:
         return None, None
     
     #under the assumption that there will be only one face,
@@ -143,7 +143,7 @@ def prepare_training_data(data_folder_path):
         #our subject directories start with letter 's' so
         #ignore any non-relevant directories if any
         if not dir_name.startswith("s"):
-            continue;
+            continue
             
         #------STEP-2--------
         #extract label number of subject from dir_name
@@ -165,22 +165,21 @@ def prepare_training_data(data_folder_path):
             
             #ignore system files like .DS_Store
             if image_name.startswith("."):
-                continue;
+                continue
             
             #build image path
             #sample image path = training-data/s1/1.pgm
             image_path = subject_dir_path + "/" + image_name
-
+            
             #read image
             image = cv2.imread(image_path)
             
             #display an image window to show the image 
-            cv2.imshow("Training on image...", cv2.resize(image, (400, 500)))
-            cv2.waitKey(100)
+            #cv2.imshow("Training on image...", cv2.resize(image, (400, 500)))
+            #cv2.waitKey(100)
             
             #detect face
             face, rect = detect_face(image)
-            
             #------STEP-4--------
             #for the purpose of this tutorial
             #we will ignore faces that are not detected
@@ -277,12 +276,12 @@ face_recognizer.train(faces, np.array(labels))
 #given width and heigh
 def draw_rectangle(img, rect):
     (x, y, w, h) = rect
-    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 4)
     
 #function to draw text on give image starting from
 #passed (x, y) coordinates. 
 def draw_text(img, text, x, y):
-    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, (x+y)/100.0, (255, 0, 255), 5)
 
 
 # First function `draw_rectangle` draws a rectangle on image based on passed rectangle coordinates. It uses OpenCV's built in function `cv2.rectangle(img, topLeftPoint, bottomRightPoint, rgbColor, lineWidth)` to draw rectangle. We will use it to draw a rectangle around the face detected in test image.
@@ -296,6 +295,9 @@ def draw_text(img, text, x, y):
 #this function recognizes the person in image passed
 #and draws a rectangle around detected face with name of the 
 #subject
+
+correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0}
+
 def predict(test_img):
     #make a copy of the image as we don't want to chang original image
     img = test_img.copy()
@@ -303,10 +305,15 @@ def predict(test_img):
     face, rect = detect_face(img)
 
     #predict the image using our face recognizer 
+    #confiança é distância = quanto menor, melhor -> houve maior similaridade
     label, confidence = face_recognizer.predict(face)
-    #get name of respective label returned by face recognizer
-    label_text = subjects[label]
     
+    label_text = "unknown"
+    if confidence <= 70:
+        #get name of respective label returned by face recognizer
+        label_text = subjects[label]
+        correct_predictions[label_text] += 1
+
     #draw a rectangle around face detected
     draw_rectangle(img, rect)
     #draw name of predicted person
@@ -320,24 +327,32 @@ def predict(test_img):
 
 print("Predicting images...")
 
-#load test images
-test_img1 = cv2.imread("test-data/test1.jpg")
-test_img2 = cv2.imread("test-data/test2.jpg")
+def accuracy(person_name, n_test_images):
+   
+    #load test images
+    for i in range(1, n_test_images + 1):
+        print "%s:imagem %d" % (person_name, i)
 
-#perform a prediction
-predicted_img1 = predict(test_img1)
-predicted_img2 = predict(test_img2)
+        img_file = "test-data/%s-test/test%d.jpg" % (person_name, i)
+        test_img = cv2.imread(img_file) 
+        
+        #perform a prediction
+        predicted_img = predict(test_img)
+    
+    accuracy = correct_predictions[person_name] / float(n_test_images)  
+    print "accuracy for %s is: %.2f" % (person_name, accuracy * 100)
+
+accuracy("Seu Madruga", 10)
+accuracy("Bolsomito", 10)
 print("Prediction complete")
 
-#display both images
-cv2.imshow(subjects[1], cv2.resize(predicted_img1, (400, 500)))
-cv2.imshow(subjects[2], cv2.resize(predicted_img2, (400, 500)))
+img_file = "test-data/%s-test/test%d.jpg" % ("Seu Madruga", 1)
+test_img = cv2.imread(img_file) 
+        
+#perform a prediction
+predicted_img = predict(test_img)
+
+#display images
+cv2.imshow(subjects[2], cv2.resize(predicted_img, (predicted_img.shape[1], predicted_img.shape[0])))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-cv2.waitKey(1)
-cv2.destroyAllWindows()
-
-
-
-
-
