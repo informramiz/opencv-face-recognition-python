@@ -103,10 +103,10 @@ def detect_face(img):
 
     #let's detect multiscale (some images may be closer to camera than others) images
     #result is a list of faces
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5);
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5)
     
     #if no faces are detected then return original img
-    if (len(faces) == 0):
+    if len(faces) == 0:
         return None, None
     
     #under the assumption that there will be only one face,
@@ -143,7 +143,7 @@ def prepare_training_data(data_folder_path):
         #our subject directories start with letter 's' so
         #ignore any non-relevant directories if any
         if not dir_name.startswith("s"):
-            continue;
+            continue
             
         #------STEP-2--------
         #extract label number of subject from dir_name
@@ -165,18 +165,18 @@ def prepare_training_data(data_folder_path):
             
             #ignore system files like .DS_Store
             if image_name.startswith("."):
-                continue;
+                continue
             
             #build image path
             #sample image path = training-data/s1/1.pgm
             image_path = subject_dir_path + "/" + image_name
-
+            
             #read image
             image = cv2.imread(image_path)
             
             #display an image window to show the image 
-            cv2.imshow("Training on image...", cv2.resize(image, (400, 500)))
-            cv2.waitKey(100)
+            #cv2.imshow("Training on image...", cv2.resize(image, (400, 500)))
+            #cv2.waitKey(100)
             
             #detect face
             face, rect = detect_face(image)
@@ -342,15 +342,17 @@ def accuracy(person_name, n_test_images):
     accuracy = correct_predictions[person_name] / float(n_test_images)  
     print "accuracy for %s is: %.2f" % (person_name, accuracy * 100)
 
+accuracy("Seu Madruga", 10)
 accuracy("Bolsomito", 10)
 print("Prediction complete")
 
-img_file = "test-data/%s-test/test%d.jpg" % ("Bolsomito", 2)
+img_file = "test-data/%s-test/test%d.jpg" % ("Seu Madruga", 1)
 test_img = cv2.imread(img_file) 
         
 #perform a prediction
 predicted_img = predict(test_img)
+
 #display images
-cv2.imshow(subjects[1], cv2.resize(predicted_img, (predicted_img.shape[1], predicted_img.shape[0])))
+cv2.imshow(subjects[2], cv2.resize(predicted_img, (predicted_img.shape[1], predicted_img.shape[0])))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
