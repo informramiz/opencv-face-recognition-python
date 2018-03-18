@@ -309,7 +309,7 @@ def predict(test_img):
     label, confidence = face_recognizer.predict(face)
     
     label_text = "unknown"
-    if confidence <= 55:
+    if confidence <= 70:
         #get name of respective label returned by face recognizer
         label_text = subjects[label]
         correct_predictions[label_text] += 1
