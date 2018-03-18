@@ -345,7 +345,12 @@ def accuracy(person_name, n_test_images):
 accuracy("Bolsomito", 10)
 print("Prediction complete")
 
+img_file = "test-data/%s-test/test%d.jpg" % ("Bolsomito", 2)
+test_img = cv2.imread(img_file) 
+        
+#perform a prediction
+predicted_img = predict(test_img)
 #display images
-#cv2.imshow(subjects[1], cv2.resize(predicted_img1, (400, 500)))
+cv2.imshow(subjects[1], cv2.resize(predicted_img, (predicted_img.shape[1], predicted_img.shape[0])))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
