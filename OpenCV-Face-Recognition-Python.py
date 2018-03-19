@@ -126,7 +126,7 @@ def detect_face(img):
 #this function will read all persons' training images, detect face from each image
 #and will return two lists of exactly same size, one list
 # of faces and another list of labels for each face
-def prepare_training_data(data_folder_path):
+def prepare_training_data(data_folder_path, quant_training_images):
 
     #------STEP-1--------
     #get the directories (one directory for each subject) in data folder
@@ -161,8 +161,8 @@ def prepare_training_data(data_folder_path):
         #------STEP-3--------
         #go through each image name, read image,
         #detect face and add face to list of faces
+        c = 0
         for image_name in subject_images_names:
-
             #ignore system files like .DS_Store
             if image_name.startswith("."):
                 continue
@@ -178,16 +178,24 @@ def prepare_training_data(data_folder_path):
             #cv2.imshow("Training on image...", cv2.resize(image, (400, 500)))
             #cv2.waitKey(100)
 
+            #image = cv2.resize(image, (400, 500))
+
             #detect face
             face, rect = detect_face(image)
+
+            #cv2.imshow("label", face)
+
             #------STEP-4--------
             #for the purpose of this tutorial
             #we will ignore faces that are not detected
             if face is not None:
+                face = cv2.resize(face, (400, 500))
                 #add face to list of faces
                 faces.append(face)
                 #add label for this face
                 labels.append(label)
+            c += 1
+            if c == quant_training_images: break
 
     cv2.destroyAllWindows()
     cv2.waitKey(1)
@@ -218,14 +226,14 @@ def prepare_training_data(data_folder_path):
 #data will be in two lists of same size
 #one list will contain all the faces
 #and other list will contain respective labels for each face
-print("Preparing data...")
+"""print("Preparing data...")
 faces, labels = prepare_training_data("training-data")
 print("Data prepared")
 
 #print total faces and labels
 print("Total faces: ", len(faces))
 print("Total labels: ", len(labels))
-
+"""
 
 # This was probably the boring part, right? Don't worry, the fun stuff is coming up next. It's time to train our own face recognizer so that once trained it can recognize new faces of the persons it was trained on. Read? Ok then let's train our face recognizer.
 
@@ -242,13 +250,17 @@ print("Total labels: ", len(labels))
 # In[6]:
 
 #create our LBPH face recognizer
-face_recognizer = cv2.face.LBPHFaceRecognizer_create()
-
+#face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+face_recognizers = {
+    "LBPH": cv2.face.LBPHFaceRecognizer_create(),
+    "EigenFace": cv2.face.EigenFaceRecognizer_create(),
+    "FisherFace":  cv2.face.FisherFaceRecognizer_create()
+    }
 #or use EigenFaceRecognizer by replacing above line with
 #face_recognizer = cv2.face.EigenFaceRecognizer_create()
 
-#or use FisherFaceRecognizer by replacing above line with
 #face_recognizer = cv2.face.FisherFaceRecognizer_create()
+#or use FisherFaceRecognizer by replacing above line with
 
 
 # Now that we have initialized our face recognizer and we also have prepared our training data, it's time to train the face recognizer. We will do that by calling the `train(faces-vector, labels-vector)` method of face recognizer.
@@ -256,7 +268,7 @@ face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 # In[7]:
 
 #train our face recognizer of our training faces
-face_recognizer.train(faces, np.array(labels))
+#face_recognizer.train(faces, np.array(labels))
 
 
 # **Did you notice** that instead of passing `labels` vector directly to face recognizer I am first converting it to **numpy** array? This is because OpenCV expects labels vector to be a `numpy` array.
@@ -296,21 +308,21 @@ def draw_text(img, text, x, y):
 #and draws a rectangle around detected face with name of the
 #subject
 
-correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0, "Idris Elba": 0}
-
-def predict(test_img, person_name):
+def predict(test_img, person_name, face_recognizer):
     #make a copy of the image as we don't want to chang original image
     img = test_img.copy()
     #detect face from the image
     face, rect = detect_face(img)
+    face = cv2.resize(face, (400, 500))
 
     #predict the image using our face recognizer
     #confiança é distância = quanto menor, melhor -> houve maior similaridade
     label, confidence = face_recognizer.predict(face)
 
-    print subjects[label]
+    #print subjects[label]
     label_text = "unknown"
-    if confidence <= 70 and subjects[label] == person_name:
+    #if confidence <= 70 and subjects[label] == person_name:
+    if subjects[label] == person_name:
         #get name of respective label returned by face recognizer
         label_text = subjects[label]
         correct_predictions[label_text] += 1
@@ -328,33 +340,54 @@ def predict(test_img, person_name):
 
 print("Predicting images...")
 
-def accuracy(person_name, n_test_images):
+def accuracy(person_name, n_test_images, face_recognizer, correct_predictions):
 
     #load test images
     for i in range(1, n_test_images + 1):
-        print "%s:imagem %d" % (person_name, i)
+        #print "%s:imagem %d" % (person_name, i)
 
         img_file = "test-data/%s-test/test%d.jpg" % (person_name, i)
         test_img = cv2.imread(img_file)
 
         #perform a prediction
-        predicted_img = predict(test_img, person_name)
+        predicted_img = predict(test_img, person_name, face_recognizer)
 
     accuracy = correct_predictions[person_name] / float(n_test_images)
     print "accuracy for %s is: %.2f" % (person_name, accuracy * 100)
 
-accuracy("Seu Madruga", 10)
-accuracy("Bolsomito", 10)
-accuracy("Idris Elba", 10)
+training_sample_levels = [5, 20]
+
+for face_recognizer in face_recognizers:
+    for quant_training_images in training_sample_levels:
+        print("Preparing data...")
+        faces, labels = prepare_training_data("training-data", quant_training_images)
+        print("Data prepared")
+
+        #print total faces and labels
+        print("Total faces: ", len(faces))
+        print("Total labels: ", len(labels))
+
+        recognizer = face_recognizers[face_recognizer]
+        recognizer.train(faces, np.array(labels))
+        for subject in subjects:
+            correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0, "Idris Elba": 0}
+            if len(subject) != 0:
+                print "Levels being used: "
+                print "Recognizer: %s" % face_recognizer
+                print "Quantity of training images: %d" % quant_training_images
+                print "Subject: %s" % subject
+
+                accuracy(subject, 10, recognizer, correct_predictions)
 print("Prediction complete")
 
 img_file = "test-data/%s-test/test%d.jpg" % ("Seu Madruga", 1)
 test_img = cv2.imread(img_file)
 
 #perform a prediction
-predicted_img = predict(test_img)
+"""predicted_img = predict(test_img, "Seu Madruga")
 
 #display images
 cv2.imshow(subjects[2], cv2.resize(predicted_img, (predicted_img.shape[1], predicted_img.shape[0])))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+"""
