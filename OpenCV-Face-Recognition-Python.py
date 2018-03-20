@@ -216,7 +216,7 @@ def accuracy(person_name, arrayTest, face_recognizer, correct_predictions, recog
 
 
         #perform a prediction
-        predicted_img = predict(test_img, person_name, face_recognizer, correct_predictions)
+        predicted_img = predict(test_img, person_name, face_recognizer, correct_predictions=correct_predictions)
     cv2.destroyAllWindows()
     print (correct_predictions)
     print (person_name)
