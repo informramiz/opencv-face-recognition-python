@@ -7,6 +7,9 @@ import os
 #it is needed by OpenCV face recognizers
 import numpy as np
 import random
+import csv
+import sys
+
 
 #there is no label 0 in our training data so subject name for index/label 0 is empty
 subjects = ["", "Bolsomito", "Seu Madruga", "Idris Elba"]
@@ -156,7 +159,9 @@ def draw_text(img, text, x, y):
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, (x+y)/100.0, (255, 0, 255), 5)
 
 
-def predict(test_img, person_name, face_recognizer):
+def predict(test_img, person_name, face_recognizer, demo=False):
+    if test_img is None: return
+
     #make a copy of the image as we don't want to chang original image
     img = test_img.copy()
     #detect face from the image
@@ -164,7 +169,7 @@ def predict(test_img, person_name, face_recognizer):
     face = cv2.resize(face, (400, 500))
 
     #predict the image using our face recognizer
-    #confiança é distância = quanto menor, melhor -> houve maior similaridade
+    #confianca eh distancia = quanto menor, melhor -> houve maior similaridade
     # cv2.imshow("gg", cv2.resize(face, (400, 500)))
     # cv2.waitKey(0)
 
@@ -173,10 +178,12 @@ def predict(test_img, person_name, face_recognizer):
     #print subjects[label]
     label_text = "unknown"
     #if confidence <= 70 and subjects[label] == person_name:
-    if subjects[label] == person_name:
+    if subjects[label] == person_name and not demo:
         #get name of respective label returned by face recognizer
         label_text = subjects[label]
         correct_predictions[label_text] += 1
+    else:
+        label_text = subjects[label]
 
     #draw a rectangle around face detected
     draw_rectangle(img, rect)
@@ -236,49 +243,73 @@ def defineTestImagesArray(numberOfTestImages, repet):
             i += 1
     return arrayTest
 
-training_sample_levels = [5,20]
-repeticoes = 2
+def run_experiment():
+    training_sample_levels = [5,20]
+    repeticoes = 1
 
-for repet in range(repeticoes):
-    print ("### Inicio Repeticao ## ")
-    print ("### Inicio Repeticao ## ")
-    print ("### Inicio Repeticao ## ")
-    print ("### Inicio Repeticao ## ")
-    for face_recognizer in face_recognizers:
-        for quant_training_images in training_sample_levels:
-            print("Preparing data...")
-            arrayTest = defineTestImagesArray(10, repet)
-            print (arrayTest)
-            faces, labels = prepare_training_data("training-data", quant_training_images, arrayTest)
-            print("Data prepared")
+    for repet in range(repeticoes):
+        print ("### Inicio Repeticao ## ")
+        print ("### Inicio Repeticao ## ")
+        print ("### Inicio Repeticao ## ")
+        print ("### Inicio Repeticao ## ")
+        for face_recognizer in face_recognizers:
+            for quant_training_images in training_sample_levels:
+                print("Preparing data...")
+                arrayTest = defineTestImagesArray(10, repet)
+                print (arrayTest)
+                faces, labels = prepare_training_data("training-data", quant_training_images, arrayTest)
+                print("Data prepared")
 
-            # print total faces and labels
-            print("Total faces: ", len(faces))
-            print("Total labels: ", len(labels))
+                # print total faces and labels
+                print("Total faces: ", len(faces))
+                print("Total labels: ", len(labels))
 
-            recognizer = face_recognizers[face_recognizer]
-            recognizer.train(faces, np.array(labels))
-            for subject in subjects:
-                correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0, "Idris Elba": 0}
-                if len(subject) != 0:
-                    print ("Levels being used: ")
-                    print ("Recognizer: %s" % face_recognizer)
-                    print ("Quantity of training images: %d" % quant_training_images)
-                    print ("Subject: %s" % subject)
+                recognizer = face_recognizers[face_recognizer]
+                recognizer.train(faces, np.array(labels))
+                for subject in subjects:
+                    correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0, "Idris Elba": 0}
+                    if len(subject) != 0:
+                        print ("Levels being used: ")
+                        print ("Recognizer: %s" % face_recognizer)
+                        print ("Quantity of training images: %d" % quant_training_images)
+                        print ("Subject: %s" % subject)
 
-                    accuracy(subject, arrayTest, recognizer, correct_predictions, face_recognizer, quant_training_images)
+                        accuracy(subject, arrayTest, recognizer, correct_predictions, face_recognizer, quant_training_images)
 
-print("Prediction complete")
+    print("Prediction complete")
 
-print (results)
-img_file = "test-data/%s-test/test%d.jpg" % ("Seu Madruga", 1)
-test_img = cv2.imread(img_file)
 
-#perform a prediction
-"""predicted_img = predict(test_img, "Seu Madruga")
+    with open('results.csv', 'w') as file:
+        file.write("face_recognizer;subject;quant_training_images;accuracy\n")
+        for face_recognizer in results:
+            for subject in results[face_recognizer]:
+                for quant_training_images in results[face_recognizer][subject]:
+                    for accur in results[face_recognizer][subject][quant_training_images]:
+                        row = face_recognizer + ";" + subject + ";" + quant_training_images + ";" + str(accur) + "\n"
+                        file.write(row)
 
-#display images
-cv2.imshow(subjects[2], cv2.resize(predicted_img, (predicted_img.shape[1], predicted_img.shape[0])))
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-"""
+def run_demo():
+    img_file = "training-data/s2/1.jpg"
+    test_img = cv2.imread(img_file)
+
+    arrayTest = defineTestImagesArray(10, 1)
+    faces, labels = prepare_training_data("training-data", 20, arrayTest)
+    recognizer = face_recognizers["LBPH"]
+    recognizer.train(faces, np.array(labels))
+    #perform a prediction
+    predicted_img = predict(test_img, "Seu Madruga", recognizer, demo=True)
+
+    #display images
+    cv2.imshow(subjects[2], cv2.resize(predicted_img, (400, 500)))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+if len(sys.argv) == 2:
+    param = sys.argv[1]
+
+    if param == "experiment":
+        run_experiment()
+    elif param == "demo":
+        run_demo()
+    else:
+        print "Invalid parameter. Use <experiment> or <demo>"
