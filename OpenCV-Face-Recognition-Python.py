@@ -226,10 +226,9 @@ def accuracy(person_name, arrayTest, face_recognizer, correct_predictions, recog
 
 def defineTestImagesArray(numberOfTestImages, repet):
     #Set the seed for the experiment
-    if (repet == 0):
-        random.seed(1)
-    else:
-        random.seed(20)
+    seeds = [1,20,30,45,9]
+    random.seed(seeds[repet])
+    
     numberOfImages = 30
     arrayTest = []
 
