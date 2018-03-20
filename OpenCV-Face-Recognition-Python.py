@@ -10,6 +10,44 @@ import random
 
 #there is no label 0 in our training data so subject name for index/label 0 is empty
 subjects = ["", "Bolsomito", "Seu Madruga", "Idris Elba"]
+results = {}
+results["LBPH"] = {}
+results["EigenFace"] = {}
+results["FisherFace"] = {}
+
+results["LBPH"]["Bolsomito"] = {}
+results["EigenFace"]["Bolsomito"] = {}
+results["FisherFace"]["Bolsomito"] = {}
+
+results["LBPH"]["Seu Madruga"] = {}
+results["EigenFace"]["Seu Madruga"] = {}
+results["FisherFace"]["Seu Madruga"] = {}
+
+results["LBPH"]["Idris Elba"] = {}
+results["EigenFace"]["Idris Elba"] = {}
+results["FisherFace"]["Idris Elba"] = {}
+
+results["LBPH"]["Bolsomito"]["5"] = []
+results["LBPH"]["Bolsomito"]["20"] = []
+results["EigenFace"]["Bolsomito"]["5"] = []
+results["EigenFace"]["Bolsomito"]["20"] = []
+results["FisherFace"]["Bolsomito"]["5"] = []
+results["FisherFace"]["Bolsomito"]["20"] = []
+
+results["LBPH"]["Seu Madruga"]["5"] = []
+results["LBPH"]["Seu Madruga"]["20"] = []
+results["EigenFace"]["Seu Madruga"]["5"] = []
+results["EigenFace"]["Seu Madruga"]["20"] = []
+results["FisherFace"]["Seu Madruga"]["5"] = []
+results["FisherFace"]["Seu Madruga"]["20"] = []
+
+results["LBPH"]["Idris Elba"]["5"] = []
+results["LBPH"]["Idris Elba"]["20"] = []
+results["EigenFace"]["Idris Elba"]["5"] = []
+results["EigenFace"]["Idris Elba"]["20"] = []
+results["FisherFace"]["Idris Elba"]["5"] = []
+results["FisherFace"]["Idris Elba"]["20"] = []
+
 
 #function to detect face using OpenCV
 def detect_face(img):
@@ -149,7 +187,7 @@ def predict(test_img, person_name, face_recognizer):
 
 print("Predicting images...")
 
-def accuracy(person_name, arrayTest, face_recognizer, correct_predictions):
+def accuracy(person_name, arrayTest, face_recognizer, correct_predictions, recognize_name, quant_training_images):
 
     #load test images
     for image_name in arrayTest:
@@ -177,10 +215,14 @@ def accuracy(person_name, arrayTest, face_recognizer, correct_predictions):
     print (person_name)
     accuracy = correct_predictions[person_name] / float(len(arrayTest))
     print ("accuracy for %s is: %.2f" % (person_name, accuracy * 100))
+    results[recognize_name][person_name][str(quant_training_images)].append(accuracy * 100)
 
-def defineTestImagesArray(numberOfTestImages):
+def defineTestImagesArray(numberOfTestImages, repet):
     #Set the seed for the experiment
-    random.seed(1)
+    if (repet == 0):
+        random.seed(1)
+    else:
+        random.seed(20)
     numberOfImages = 30
     arrayTest = []
 
@@ -195,34 +237,40 @@ def defineTestImagesArray(numberOfTestImages):
     return arrayTest
 
 training_sample_levels = [5,20]
+repeticoes = 2
 
-for face_recognizer in face_recognizers:
-    for quant_training_images in training_sample_levels:
-        print("Preparing data...")
-        arrayTest = defineTestImagesArray(10)
-        print (arrayTest)
-        faces, labels = prepare_training_data("training-data", quant_training_images, arrayTest)
-        print("Data prepared")
+for repet in range(repeticoes):
+    print ("### Inicio Repeticao ## ")
+    print ("### Inicio Repeticao ## ")
+    print ("### Inicio Repeticao ## ")
+    print ("### Inicio Repeticao ## ")
+    for face_recognizer in face_recognizers:
+        for quant_training_images in training_sample_levels:
+            print("Preparing data...")
+            arrayTest = defineTestImagesArray(10, repet)
+            print (arrayTest)
+            faces, labels = prepare_training_data("training-data", quant_training_images, arrayTest)
+            print("Data prepared")
 
-        # print total faces and labels
-        print("Total faces: ", len(faces))
-        print("Total labels: ", len(labels))
+            # print total faces and labels
+            print("Total faces: ", len(faces))
+            print("Total labels: ", len(labels))
 
-        recognizer = face_recognizers[face_recognizer]
-        recognizer.train(faces, np.array(labels))
-        for subject in subjects:
-            correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0, "Idris Elba": 0}
-            if len(subject) != 0:
-                print ("Levels being used: ")
-                print ("Recognizer: %s" % face_recognizer)
-                print ("Quantity of training images: %d" % quant_training_images)
-                print ("Subject: %s" % subject)
+            recognizer = face_recognizers[face_recognizer]
+            recognizer.train(faces, np.array(labels))
+            for subject in subjects:
+                correct_predictions = {"Bolsomito": 0, "Seu Madruga": 0, "Idris Elba": 0}
+                if len(subject) != 0:
+                    print ("Levels being used: ")
+                    print ("Recognizer: %s" % face_recognizer)
+                    print ("Quantity of training images: %d" % quant_training_images)
+                    print ("Subject: %s" % subject)
 
-                accuracy(subject, arrayTest, recognizer, correct_predictions)
+                    accuracy(subject, arrayTest, recognizer, correct_predictions, face_recognizer, quant_training_images)
 
 print("Prediction complete")
 
-
+print (results)
 img_file = "test-data/%s-test/test%d.jpg" % ("Seu Madruga", 1)
 test_img = cv2.imread(img_file)
 
