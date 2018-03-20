@@ -156,7 +156,7 @@ def draw_rectangle(img, rect):
 #function to draw text on give image starting from
 #passed (x, y) coordinates.
 def draw_text(img, text, x, y):
-    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, (x+y)/100.0, (255, 0, 255), 5)
+    cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 0, 255), 2)
 
 
 def predict(test_img, person_name, face_recognizer, demo=False, correct_predictions=None):
