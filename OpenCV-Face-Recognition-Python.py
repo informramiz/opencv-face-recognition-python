@@ -11,7 +11,7 @@ import csv
 import sys
 
 
-#there is no label 0 in our training data so subject name for index/label 0 is empty
+
 subjects = ["", "Bolsomito", "Seu Madruga", "Idris Elba"]
 results = {}
 results["LBPH"] = {}
@@ -228,7 +228,7 @@ def defineTestImagesArray(numberOfTestImages, repet):
     #Set the seed for the experiment
     seeds = [1,20,30,45,9]
     random.seed(seeds[repet])
-    
+
     numberOfImages = 30
     arrayTest = []
 
