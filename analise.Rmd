@@ -1,0 +1,107 @@
+---
+title: "IA - projeto"
+author: "Arthur Vinicius Tomé Rodrigues, João Victor Barroso Mafra, Jobson Lucas Dias da Silva"
+date: "23 de fevereiro de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+require(ggplot2, quietly = TRUE)
+require(dplyr, quietly = TRUE)
+require(tidyr)
+require(reshape2, quietly = TRUE)
+library(knitr, quietly = TRUE)
+library(reshape2, quietly = TRUE)
+
+```
+
+
+## Ler arquivo com dados alunos de cc
+```{r, echo=FALSE}
+file = read.csv("results.csv", stringsAsFactors = TRUE, encoding='UTF-8', sep = ";")
+
+ggplot(data = file, aes(y = quant_training_images, x = accuracy, color = face_recognizer)) +
+  geom_point(size = 5, position=position_jitter(h=0.5, w=0.01), alpha = 0.7) + 
+  ggtitle("Resultados para todos os métodos") + 
+  xlab("Acurácia") + 
+  ylab("Quantidade de imagens") +
+  theme(axis.line = element_line(colour = "black"),
+    panel.background = element_blank())
+
+lbph = file %>% filter(face_recognizer=="LBPH") %>% 
+  group_by(face_recognizer, subject, quant_training_images) %>%
+  summarise(accuracy = median(accuracy))
+
+lbph_p = file %>% filter(face_recognizer=="LBPH") %>% 
+  group_by(face_recognizer, subject) %>%
+  summarise(accuracy = median(accuracy))
+
+x = ggplot(data = lbph_p, aes(y = 1:3, x = accuracy, color = subject)) +
+  geom_point(size = 5, position=position_jitter(h=0.5, w=0.01), alpha = 0.7) + 
+  ggtitle("Resultados para LBPH") + 
+  xlab("Acurácia") + 
+  ylab("Quantidade de imagens") +
+  theme(axis.line = element_line(colour = "black"),
+    panel.background = element_blank())
+x
+
+eingen = file %>% filter(face_recognizer=="EigenFace") %>% 
+  group_by(face_recognizer, subject, quant_training_images) %>%
+  summarise(accuracy = median(accuracy))
+
+eingen_p = file %>% filter(face_recognizer=="EigenFace") %>% 
+  group_by(face_recognizer, subject) %>%
+  summarise(accuracy = median(accuracy))
+
+y = ggplot(data = eingen, aes(y = quant_training_images, x = accuracy, color = subject)) +
+  geom_point(size = 5, position=position_jitter(h=0.5, w=0.01), alpha = 0.7) + 
+  ggtitle("Resultados para EingenFace") + 
+  xlab("Acurácia") + 
+  ylab("Quantidade de imagens") +
+  theme(axis.line = element_line(colour = "black"),
+    panel.background = element_blank())
+y
+
+fisher = file %>% filter(face_recognizer=="FisherFace") %>% 
+  group_by(face_recognizer, subject, quant_training_images) %>%
+  summarise(accuracy = median(accuracy))
+
+fisher_p = file %>% filter(face_recognizer=="FisherFace") %>% 
+  group_by(face_recognizer, subject) %>%
+  summarise(accuracy = median(accuracy))
+
+z = ggplot(data = fisher, aes(y = quant_training_images, x = accuracy, color = subject)) +
+  geom_point(size = 5, position=position_jitter(h=0.5, w=0.5), alpha = 0.7) + 
+  ggtitle("Resultados para FischerFace") + 
+  xlab("Acurácia") + 
+  ylab("Quantidade de imagens") +
+  theme(axis.line = element_line(colour = "black"),
+    panel.background = element_blank())
+
+z
+
+df = merge(fisher_p, eingen_p, all=TRUE)
+
+df = merge(df, lbph_p, all=TRUE)
+
+ggplot(data = df, aes(y = c(0, 30, 40, 50, 60, 70, 80, 90, 100), 
+                      x = accuracy, color = face_recognizer)) +
+  geom_point(size = 5, position=position_jitter(h=0.5, w=0.5), alpha = 0.7) + 
+  ggtitle("Resultados para Todos os métodos") + 
+  xlab("Acurácia") + 
+  theme(axis.line = element_line(colour = "black"),
+    panel.background = element_blank())
+
+xxx = df %>%  group_by(face_recognizer) %>%
+  summarise(accuracy = median(accuracy))
+
+ggplot(data = xxx, aes(y = c(0, 50, 100), 
+                      x = accuracy, color = face_recognizer)) +
+  geom_point(size = 5, position=position_jitter(h=0.5, w=0.5), alpha = 0.7) + 
+  ggtitle("Resultados para Todos os métodos") + 
+  xlab("Acurácia") + 
+  theme(axis.line = element_line(colour = "black"),
+    panel.background = element_blank())
+
+
+```

@@ -1,19 +1,91 @@
 face_recognizer;subject;quant_training_images;accuracy
-LBPH;Seu Madruga;20;80.0
-LBPH;Seu Madruga;5;80.0
+LBPH;Bolsomito;5;80.0
+LBPH;Bolsomito;5;70.0
+LBPH;Bolsomito;5;70.0
+LBPH;Bolsomito;5;60.0
+LBPH;Bolsomito;5;80.0
+LBPH;Bolsomito;20;90.0
 LBPH;Bolsomito;20;100.0
-LBPH;Bolsomito;5;30.0
-LBPH;Idris Elba;20;100.0
+LBPH;Bolsomito;20;80.0
+LBPH;Bolsomito;20;70.0
+LBPH;Bolsomito;20;100.0
+LBPH;Seu Madruga;5;70.0
+LBPH;Seu Madruga;5;70.0
+LBPH;Seu Madruga;5;70.0
+LBPH;Seu Madruga;5;90.0
+LBPH;Seu Madruga;5;100.0
+LBPH;Seu Madruga;20;100.0
+LBPH;Seu Madruga;20;100.0
+LBPH;Seu Madruga;20;100.0
+LBPH;Seu Madruga;20;90.0
+LBPH;Seu Madruga;20;100.0
+LBPH;Idris Elba;5;70.0
 LBPH;Idris Elba;5;90.0
-EigenFace;Seu Madruga;20;80.0
-EigenFace;Seu Madruga;5;70.0
+LBPH;Idris Elba;5;90.0
+LBPH;Idris Elba;5;70.0
+LBPH;Idris Elba;5;100.0
+LBPH;Idris Elba;20;90.0
+LBPH;Idris Elba;20;90.0
+LBPH;Idris Elba;20;100.0
+LBPH;Idris Elba;20;80.0
+LBPH;Idris Elba;20;80.0
+EigenFace;Bolsomito;5;50.0
+EigenFace;Bolsomito;5;40.0
+EigenFace;Bolsomito;5;40.0
+EigenFace;Bolsomito;5;70.0
+EigenFace;Bolsomito;5;60.0
+EigenFace;Bolsomito;20;80.0
 EigenFace;Bolsomito;20;50.0
-EigenFace;Bolsomito;5;30.0
-EigenFace;Idris Elba;20;40.0
+EigenFace;Bolsomito;20;70.0
+EigenFace;Bolsomito;20;70.0
+EigenFace;Bolsomito;20;70.0
+EigenFace;Seu Madruga;5;100.0
+EigenFace;Seu Madruga;5;90.0
+EigenFace;Seu Madruga;5;80.0
+EigenFace;Seu Madruga;5;50.0
+EigenFace;Seu Madruga;5;90.0
+EigenFace;Seu Madruga;20;100.0
+EigenFace;Seu Madruga;20;70.0
+EigenFace;Seu Madruga;20;90.0
+EigenFace;Seu Madruga;20;80.0
+EigenFace;Seu Madruga;20;100.0
+EigenFace;Idris Elba;5;20.0
 EigenFace;Idris Elba;5;40.0
-FisherFace;Seu Madruga;20;90.0
-FisherFace;Seu Madruga;5;80.0
-FisherFace;Bolsomito;20;90.0
+EigenFace;Idris Elba;5;40.0
+EigenFace;Idris Elba;5;20.0
+EigenFace;Idris Elba;5;40.0
+EigenFace;Idris Elba;20;70.0
+EigenFace;Idris Elba;20;60.0
+EigenFace;Idris Elba;20;50.0
+EigenFace;Idris Elba;20;40.0
+EigenFace;Idris Elba;20;50.0
+FisherFace;Bolsomito;5;90.0
+FisherFace;Bolsomito;5;70.0
+FisherFace;Bolsomito;5;70.0
+FisherFace;Bolsomito;5;70.0
 FisherFace;Bolsomito;5;80.0
-FisherFace;Idris Elba;20;100.0
+FisherFace;Bolsomito;20;90.0
+FisherFace;Bolsomito;20;100.0
+FisherFace;Bolsomito;20;90.0
+FisherFace;Bolsomito;20;80.0
+FisherFace;Bolsomito;20;90.0
+FisherFace;Seu Madruga;5;90.0
+FisherFace;Seu Madruga;5;70.0
+FisherFace;Seu Madruga;5;90.0
+FisherFace;Seu Madruga;5;80.0
+FisherFace;Seu Madruga;5;90.0
+FisherFace;Seu Madruga;20;100.0
+FisherFace;Seu Madruga;20;90.0
+FisherFace;Seu Madruga;20;90.0
+FisherFace;Seu Madruga;20;90.0
+FisherFace;Seu Madruga;20;100.0
+FisherFace;Idris Elba;5;80.0
+FisherFace;Idris Elba;5;70.0
 FisherFace;Idris Elba;5;40.0
+FisherFace;Idris Elba;5;50.0
+FisherFace;Idris Elba;5;50.0
+FisherFace;Idris Elba;20;80.0
+FisherFace;Idris Elba;20;90.0
+FisherFace;Idris Elba;20;100.0
+FisherFace;Idris Elba;20;50.0
+FisherFace;Idris Elba;20;80.0
