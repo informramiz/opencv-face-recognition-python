@@ -311,4 +311,4 @@ if len(sys.argv) == 2:
     elif param == "demo":
         run_demo()
     else:
-        print "Invalid parameter. Use <experiment> or <demo>"
+        print ("Invalid parameter. Use <experiment> or <demo>")
