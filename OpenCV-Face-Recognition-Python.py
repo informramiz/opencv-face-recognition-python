@@ -159,7 +159,7 @@ def draw_text(img, text, x, y):
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_PLAIN, (x+y)/100.0, (255, 0, 255), 5)
 
 
-def predict(test_img, person_name, face_recognizer, demo=False):
+def predict(test_img, person_name, face_recognizer, demo=False, correct_predictions=None):
     if test_img is None: return
 
     #make a copy of the image as we don't want to chang original image
@@ -216,7 +216,7 @@ def accuracy(person_name, arrayTest, face_recognizer, correct_predictions, recog
 
 
         #perform a prediction
-        predicted_img = predict(test_img, person_name, face_recognizer)
+        predicted_img = predict(test_img, person_name, face_recognizer, correct_predictions)
     cv2.destroyAllWindows()
     print (correct_predictions)
     print (person_name)
@@ -245,7 +245,7 @@ def defineTestImagesArray(numberOfTestImages, repet):
 
 def run_experiment():
     training_sample_levels = [5,20]
-    repeticoes = 1
+    repeticoes = 5
 
     for repet in range(repeticoes):
         print ("### Inicio Repeticao ## ")
